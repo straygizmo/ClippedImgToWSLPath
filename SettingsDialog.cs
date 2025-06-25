@@ -6,11 +6,11 @@ namespace ClippedImgToWSLPath
 {
     public class SettingsDialog : Form
     {
-        private TextBox pathTextBox;
-        private Button browseButton;
-        private Button okButton;
-        private Button cancelButton;
-        private Label pathLabel;
+        private TextBox pathTextBox = null!;
+        private Button browseButton = null!;
+        private Button okButton = null!;
+        private Button cancelButton = null!;
+        private Label pathLabel = null!;
 
         public string SavePath { get; private set; }
 
@@ -80,7 +80,7 @@ namespace ClippedImgToWSLPath
             this.CancelButton = cancelButton;
         }
 
-        private void BrowseButton_Click(object sender, EventArgs e)
+        private void BrowseButton_Click(object? sender, EventArgs e)
         {
             using (var dialog = new FolderBrowserDialog())
             {
@@ -95,7 +95,7 @@ namespace ClippedImgToWSLPath
             }
         }
 
-        private void OkButton_Click(object sender, EventArgs e)
+        private void OkButton_Click(object? sender, EventArgs e)
         {
             SavePath = pathTextBox.Text;
         }

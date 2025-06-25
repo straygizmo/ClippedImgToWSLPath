@@ -10,7 +10,7 @@ namespace ClippedImgToWSLPath
 {
     public partial class MainForm : Form
     {
-        private NotifyIcon trayIcon;
+        private NotifyIcon trayIcon = null!;
         private System.Windows.Forms.Timer clipboardTimer;
         private string savePath = Path.Combine(Application.StartupPath, "ClipboardImages");
         private string lastClipboardHash = "";
@@ -36,6 +36,12 @@ namespace ClippedImgToWSLPath
         public MainForm()
         {
             InitializeComponent();
+            
+            // Hide the form before doing anything else
+            this.WindowState = FormWindowState.Minimized;
+            this.ShowInTaskbar = false;
+            this.Visible = false;
+            
             SetupSystemTray();
             
             if (!Directory.Exists(savePath))
@@ -50,10 +56,6 @@ namespace ClippedImgToWSLPath
             clipboardTimer.Interval = 1000; // 1秒ごと
             clipboardTimer.Tick += ClipboardTimer_Tick;
             clipboardTimer.Start();
-            
-            this.WindowState = FormWindowState.Minimized;
-            this.ShowInTaskbar = false;
-            this.Visible = false;
         }
 
         private void SetupSystemTray()
@@ -151,7 +153,7 @@ namespace ClippedImgToWSLPath
             WriteLog("HandleClipboardChange called - processing");
         }
 
-        private void ClipboardTimer_Tick(object sender, EventArgs e)
+        private void ClipboardTimer_Tick(object? sender, EventArgs e)
         {
             if (isProcessingClipboard) return;
             
@@ -162,7 +164,7 @@ namespace ClippedImgToWSLPath
                 if (Clipboard.ContainsImage())
                 {
                     WriteLog("Timer: Clipboard contains image");
-                    Image image = Clipboard.GetImage();
+                    Image? image = Clipboard.GetImage();
                     
                     if (image != null)
                     {
@@ -266,6 +268,17 @@ namespace ClippedImgToWSLPath
             Application.Exit();
         }
 
+        protected override void SetVisibleCore(bool value)
+        {
+            // Prevent the form from becoming visible on startup
+            if (!this.IsHandleCreated)
+            {
+                this.CreateHandle();
+                value = false;
+            }
+            base.SetVisibleCore(value);
+        }
+
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
@@ -339,7 +352,7 @@ namespace ClippedImgToWSLPath
             catch (Exception ex)
             {
                 WriteLog($"GetImageFromDIB error: {ex.Message}");
-                return null;
+                return null!;
             }
         }
     }
