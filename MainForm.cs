@@ -18,6 +18,7 @@ namespace ClippedImgToWSLPath
         private bool isProcessingClipboard = false;
         private DateTime lastClipboardTime = DateTime.MinValue;
         private bool enableLogging = false; // ログ出力のオン/オフ
+        private bool timerEnabled = true; // Timer functionality on/off
 
         [DllImport("user32.dll")]
         static extern IntPtr SetClipboardViewer(IntPtr hWndNewViewer);
@@ -95,6 +96,27 @@ namespace ClippedImgToWSLPath
             settingsItem.Click += (s, e) => ShowSettingsDialog();
             contextMenu.Items.Add(settingsItem);
             
+            var timerItem = new ToolStripMenuItem("Enable Timer");
+            timerItem.Checked = timerEnabled;
+            timerItem.Click += (s, e) => 
+            {
+                timerEnabled = !timerEnabled;
+                timerItem.Checked = timerEnabled;
+                if (timerEnabled)
+                {
+                    clipboardTimer.Start();
+                    ShowBalloonTip("Timer Enabled", "Clipboard monitoring is now active", ToolTipIcon.Info);
+                    WriteLog("Timer enabled");
+                }
+                else
+                {
+                    clipboardTimer.Stop();
+                    ShowBalloonTip("Timer Disabled", "Clipboard monitoring is now inactive", ToolTipIcon.Info);
+                    WriteLog("Timer disabled");
+                }
+            };
+            contextMenu.Items.Add(timerItem);
+            
             var loggingItem = new ToolStripMenuItem("Enable Logging");
             loggingItem.Checked = enableLogging;
             loggingItem.Click += (s, e) => 
@@ -155,7 +177,7 @@ namespace ClippedImgToWSLPath
 
         private void ClipboardTimer_Tick(object? sender, EventArgs e)
         {
-            if (isProcessingClipboard) return;
+            if (isProcessingClipboard || !timerEnabled) return;
             
             try
             {
