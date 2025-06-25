@@ -23,7 +23,7 @@ namespace ClippedImgToWSLPath
 
         private void InitializeComponent()
         {
-            this.Text = "設定";
+            this.Text = "Settings";
             this.Size = new Size(500, 200);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -32,7 +32,7 @@ namespace ClippedImgToWSLPath
 
             pathLabel = new Label
             {
-                Text = "画像の保存先:",
+                Text = "Save Location:",
                 Location = new Point(20, 20),
                 Size = new Size(100, 25),
                 TextAlign = ContentAlignment.MiddleLeft
@@ -47,7 +47,7 @@ namespace ClippedImgToWSLPath
 
             browseButton = new Button
             {
-                Text = "参照...",
+                Text = "Browse...",
                 Location = new Point(380, 48),
                 Size = new Size(80, 25)
             };
@@ -64,7 +64,7 @@ namespace ClippedImgToWSLPath
 
             cancelButton = new Button
             {
-                Text = "キャンセル",
+                Text = "Cancel",
                 Location = new Point(380, 100),
                 Size = new Size(80, 30),
                 DialogResult = DialogResult.Cancel
@@ -84,7 +84,7 @@ namespace ClippedImgToWSLPath
         {
             using (var dialog = new FolderBrowserDialog())
             {
-                dialog.Description = "画像を保存するフォルダを選択してください";
+                dialog.Description = "Select a folder to save images";
                 dialog.SelectedPath = pathTextBox.Text;
                 dialog.ShowNewFolderButton = true;
 
